@@ -16,24 +16,38 @@ Automated rental alerts for StreetEasy listings, sent directly to your Discord o
 - Go to the **SQL Editor** and run the contents of `supabase/schema.sql`.
 - Enable **Email Auth** or **Magic Links** in the Auth settings.
 
-### 2. Edge Function Deployment
-- Install the [Supabase CLI](https://supabase.com/docs/guides/cli).
-- Login and link your project: `supabase login` and `supabase link --project-ref your-project-ref`.
-- Deploy the function: `supabase functions deploy check-alerts`.
+### 2. Resend Setup
+- Create a free account at [resend.com](https://resend.com).
+- In the dashboard, navigate to **API Keys** in the sidebar.
+- Click **Create API Key**, give it a name (e.g., "StreetEasy Helper"), and copy the key immediately.
+- *Note*: By default, you can send emails to your own account email. To send to others, you would need to verify a domain, but for personal alerts, the default setup is sufficient.
+
+### 3. Edge Function Deployment
+- Login and link your project: `npx supabase login` and `npx supabase link --project-ref your-project-ref`.
+- Deploy the function: `npx supabase functions deploy check-alerts`.
 - Set secrets for the function:
   ```bash
-  supabase secrets set RESEND_API_KEY=your_resend_key
-  supabase secrets set SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+  npx supabase secrets set RESEND_API_KEY=your_resend_key
+  npx supabase secrets set SERVICE_ROLE_KEY=your_service_role_key
   ```
+- **RESEND_API_KEY**: The key you just generated in Resend.
+- **SERVICE_ROLE_KEY**: Found in your Supabase Dashboard under **Project Settings > API**. 
+  - *Note*: Use the `service_role` key (secret), NOT the `anon` key, as the function needs full database access to bypass Row Level Security and check/update listings for all users.np
 
-### 3. Schedule the Checker
+### 4. Schedule the Checker
 In the Supabase Dashboard, go to **Database > Cron** (if enabled) or use an external trigger to call your function endpoint every 30 minutes:
 `POST https://your-project.supabase.co/functions/v1/check-alerts` (use service role key for auth).
 
-### 4. Frontend Deployment
-- Create a `.env` file based on `.env.example`.
-- Run `npm install` and `npm run build`.
-- Deploy to Vercel, Netlify, or similar by connecting your GitHub repo.
+### 5. Frontend Deployment
+- **Create a `.env` file**: 
+ 1. Go to your [Supabase Dashboard](https://supabase.com/dashboard).
+  2. Select your project.
+  3. Click on the **Settings** (gear icon) at the bottom of the left sidebar.
+  4. Click on **API Keys** in the sidebar. Find the `anon` `public` key for `VITE_SUPABASE_ANON_KEY`.
+  5. Click on **Data API** in the sidebar. Under **API URL**, find the `URL` for `VITE_SUPABASE_URL`.
+  6. **Save these in a local `.env` file** in the root directory of this project (see `.env.example` for format).
+- **Install and Build**: Run `npm install` followed by `npm run build`.
+- **Deploy**: Connect your GitHub repository to a platform like Vercel or Netlify. Ensure you also add your `.env` variables to the platform's "Environment Variables" settings during deployment.
 
 ## Tech Stack
 - **Frontend**: React, TypeScript, Vite, CSS Modules.

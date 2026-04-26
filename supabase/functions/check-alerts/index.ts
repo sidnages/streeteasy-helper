@@ -4,9 +4,9 @@ import { StreetEasyClient } from "https://esm.sh/streeteasy-api@0.1.11"
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")
+const SERVICE_ROLE_KEY = Deno.env.get("SERVICE_ROLE_KEY")
 
-const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!)
+const supabase = createClient(SUPABASE_URL!, SERVICE_ROLE_KEY!)
 const seClient = new StreetEasyClient()
 
 serve(async (req) => {
