@@ -178,6 +178,35 @@ h1 {
   line-height: 1.2;
 }
 
+.alert-id-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.alert-id {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-family: monospace;
+  margin: 0;
+}
+
+.copy-btn {
+  background: transparent;
+  border: none;
+  padding: 2px;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.copy-btn:hover {
+  opacity: 1;
+  background: var(--border);
+}
+
 .price-tag {
   color: var(--primary);
   font-weight: 700;
@@ -332,8 +361,43 @@ button {
 .alert-actions {
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 1rem;
+}
+
+.action-buttons-group {
+  display: flex;
+  gap: 0.5rem;
   align-items: center;
-  margin-top: 0.5rem;
+}
+
+.alert-id-container {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  opacity: 0.8;
+}
+
+.alert-id {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-family: monospace;
+  margin: 0;
+}
+
+.copy-btn {
+  background: transparent;
+  border: none;
+  padding: 2px;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.copy-btn:hover {
+  opacity: 1;
+  background: var(--border);
 }
 
 .checkbox-group button {

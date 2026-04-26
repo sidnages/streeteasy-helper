@@ -34,6 +34,8 @@ if (!isValid) {
   console.log(`✅ Supabase initialized for: ${url.substring(0, 15)}...`)
 }
 
+export const SUPABASE_CONFIG = { url, key }
+
 export const supabase = createClient(
   url || 'https://placeholder.supabase.co', 
   key || 'placeholder'

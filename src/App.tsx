@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { AlertForm } from './components/AlertForm'
 import { Alert, SearchFilters, DeliveryMethod, AREA_OPTIONS, AMENITIES_OPTIONS } from './types'
-import { supabase } from './lib/supabase'
+import { supabase, SUPABASE_CONFIG } from './lib/supabase'
 import './App.css'
 
 function App() {
@@ -112,6 +112,40 @@ function App() {
     }
   }
 
+  const testNotification = async (alertId: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert('You must be signed in to test notifications.');
+        return;
+      }
+
+      const response = await fetch(`${SUPABASE_CONFIG.url}/functions/v1/check-alerts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+          'apikey': SUPABASE_CONFIG.key
+        },
+        body: JSON.stringify({ action: 'test', alertId }),
+      });
+
+      if (response.ok) {
+        alert('Test notification sent!');
+      } else {
+        const err = await response.json().catch(() => ({ message: 'Check if function is deployed' }));
+        alert(`Deployment Error: ${err.error || err.message || 'Unknown error'}`);
+      }
+    } catch (e: any) {
+      alert('Network error: ' + e.message);
+    }
+  }
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    alert('Alert ID copied to clipboard!');
+  }
+
   return (
     <div className="container">
       <header>
@@ -121,6 +155,15 @@ function App() {
         {user && (
           <div className="user-info">
             <span>{user.email}</span>
+            <button 
+              onClick={() => {
+                const id = prompt('Enter Alert ID to test (copy from list below):');
+                if (id) testNotification(id);
+              }} 
+              className="secondary-btn"
+            >
+              Test Notification
+            </button>
             <button onClick={() => supabase.auth.signOut()} className="secondary-btn">Sign Out</button>
           </div>
         )}
@@ -182,13 +225,25 @@ function App() {
                       </div>
                     </div>
                     <div className="alert-actions">
-                      <button 
-                        onClick={() => toggleAlertStatus(alert.id, alert.is_active)}
-                        className="action-btn"
-                      >
-                        {alert.is_active ? 'Pause' : 'Resume'}
-                      </button>
-                      <button onClick={() => deleteAlert(alert.id)} className="delete-btn icon">✕</button>
+                      <div className="alert-id-container">
+                        <small className="alert-id">ID: {alert.id.substring(0, 8)}...</small>
+                        <button 
+                          onClick={() => copyToClipboard(alert.id)}
+                          className="copy-btn"
+                          title="Copy full Alert ID"
+                        >
+                          📋
+                        </button>
+                      </div>
+                      <div className="action-buttons-group">
+                        <button 
+                          onClick={() => toggleAlertStatus(alert.id, alert.is_active)}
+                          className="action-btn"
+                        >
+                          {alert.is_active ? 'Pause' : 'Resume'}
+                        </button>
+                        <button onClick={() => deleteAlert(alert.id)} className="delete-btn icon">✕</button>
+                      </div>
                     </div>
                   </div>
                 ))}

@@ -9,6 +9,13 @@ Automated rental alerts for StreetEasy listings, sent directly to your Discord o
 - **Email Alerts**: Reliable updates via Resend.
 - **Zero Cost**: Built entirely on free-tier services.
 
+## How it Works
+1. **Alert Creation**: Users define search criteria (neighborhood, price, beds, etc.) in the React frontend.
+2. **Secure Storage**: Alerts are stored in a Supabase PostgreSQL database. Row Level Security (RLS) ensures users only see their own alerts.
+3. **Automated Scanning**: A Supabase Edge Function runs on a schedule. It iterates through active alerts and queries the StreetEasy API for matches.
+4. **Intelligent Deduplication**: The app tracks `seen_listings` for each alert. You are only notified about new apartments that hit the market since the last check.
+5. **Instant Delivery**: Notifications are dispatched via Discord Webhooks or Resend (Email), providing direct links to the new listings.
+
 ## Setup Instructions
 
 ### 1. Supabase Setup
