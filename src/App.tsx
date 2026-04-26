@@ -94,63 +94,94 @@ function App() {
   }
 
   const handleSignIn = async () => {
-    const email = prompt('Enter your email for magic link:')
+    const email = prompt('Enter your email address to receive a secure login link (no password required):')
     if (email) {
-      const { error } = await supabase.auth.signInWithOtp({ email })
+      const { error } = await supabase.auth.signInWithOtp({ 
+        email,
+        options: {
+          emailRedirectTo: window.location.origin,
+        }
+      })
       if (error) alert(error.message)
-      else alert('Check your email for the login link!')
+      else alert('Check your email for the secure login link!')
     }
   }
 
   return (
     <div className="container">
       <header>
-        <h1>StreetEasy Alert Helper</h1>
-        {!user ? (
-          <button onClick={handleSignIn}>Sign In</button>
-        ) : (
+        <div className="logo">
+          <h1>StreetEasy Alert Helper</h1>
+        </div>
+        {user && (
           <div className="user-info">
             <span>{user.email}</span>
-            <button onClick={() => supabase.auth.signOut()}>Sign Out</button>
+            <button onClick={() => supabase.auth.signOut()} className="secondary-btn">Sign Out</button>
           </div>
         )}
       </header>
 
-      <main className="main-content">
-        <div className="sidebar">
-          <AlertForm onSubmit={handleCreateAlert} isLoading={isLoading} />
-        </div>
+      {!user ? (
+        <main className="landing">
+          <div className="hero">
+            <h2>Never miss a rental listing again.</h2>
+            <p>Set custom filters and get instant Discord or Email alerts as soon as a match hits StreetEasy.</p>
+            <button onClick={handleSignIn} className="primary-btn lg">Sign In via Magic Link</button>
+          </div>
+        </main>
+      ) : (
+        <main className="dashboard">
+          <section className="form-container">
+            <AlertForm onSubmit={handleCreateAlert} isLoading={isLoading} />
+          </section>
 
-        <div className="content">
-          <h3>Your Alerts</h3>
-          {alerts.length === 0 ? (
-            <p>No alerts created yet.</p>
-          ) : (
-            <div className="alert-list">
-              {alerts.map(alert => (
-                <div key={alert.id} className={`alert-card ${!alert.is_active ? 'inactive' : ''}`}>
-                  <div className="alert-info">
-                    <strong>
-                      {alert.filters.areas.length > 0 ? alert.filters.areas.length + ' Areas' : 'All Areas'}
-                    </strong>
-                    <span>
-                      {alert.filters.price.lowerBound ? `$${alert.filters.price.lowerBound}+` : 'Any price'} 
-                      {alert.filters.price.upperBound ? ` up to $${alert.filters.price.upperBound}` : ''}
-                    </span>
-                    <small>Channel: {alert.delivery_method}</small>
-                  </div>
-                  <div className="alert-actions">
-                    <button onClick={() => toggleAlertStatus(alert.id, alert.is_active)}>
-                      {alert.is_active ? 'Pause' : 'Resume'}
-                    </button>
-                    <button onClick={() => deleteAlert(alert.id)} className="delete-btn">Delete</button>
-                  </div>
-                </div>
-              ))}
+          <section className="list-container">
+            <div className="section-header">
+              <h3>Your Active Alerts</h3>
+              <span className="count-badge">{alerts.length}</span>
             </div>
-          )}
-        </div>
-      </main>
+            
+            {alerts.length === 0 ? (
+              <div className="empty-state">
+                <p>You haven't created any alerts yet. Use the form on the left to get started.</p>
+              </div>
+            ) : (
+              <div className="alert-list">
+                {alerts.map(alert => (
+                  <div key={alert.id} className={`alert-card ${!alert.is_active ? 'inactive' : ''}`}>
+                    <div className="alert-info">
+                      <strong>
+                        {alert.filters.areas.length > 0 
+                          ? alert.filters.areas.map(id => AREA_OPTIONS.find(a => a.value === id)?.label).join(', ')
+                          : 'All Areas'}
+                      </strong>
+                      <span className="price-tag">
+                        {alert.filters.price.lowerBound ? `$${alert.filters.price.lowerBound.toLocaleString()}+` : 'Any price'} 
+                        {alert.filters.price.upperBound ? ` up to $${alert.filters.price.upperBound.toLocaleString()}` : ''}
+                      </span>
+                      <div className="meta">
+                        <span className="channel-tag">{alert.delivery_method}</span>
+                        {alert.filters.bedrooms.lowerBound !== null && (
+                          <span>{alert.filters.bedrooms.lowerBound}+ Beds</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="alert-actions">
+                      <button 
+                        onClick={() => toggleAlertStatus(alert.id, alert.is_active)}
+                        className="action-btn"
+                      >
+                        {alert.is_active ? 'Pause' : 'Resume'}
+                      </button>
+                      <button onClick={() => deleteAlert(alert.id)} className="delete-btn icon">✕</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        </main>
+      )}
     </div>
   )
 }

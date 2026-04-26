@@ -38,7 +38,7 @@ Automated rental alerts for StreetEasy listings, sent directly to your Discord o
 In the Supabase Dashboard, go to **Database > Cron** (if enabled) or use an external trigger to call your function endpoint every 30 minutes:
 `POST https://your-project.supabase.co/functions/v1/check-alerts` (use service role key for auth).
 
-### 5. Frontend Deployment
+### 6. Building The Project
 - **Create a `.env` file**: 
  1. Go to your [Supabase Dashboard](https://supabase.com/dashboard).
   2. Select your project.
@@ -47,7 +47,21 @@ In the Supabase Dashboard, go to **Database > Cron** (if enabled) or use an exte
   5. Click on **Data API** in the sidebar. Under **API URL**, find the `URL` for `VITE_SUPABASE_URL`.
   6. **Save these in a local `.env` file** in the root directory of this project (see `.env.example` for format).
 - **Install and Build**: Run `npm install` followed by `npm run build`.
-- **Deploy**: Connect your GitHub repository to a platform like Vercel or Netlify. Ensure you also add your `.env` variables to the platform's "Environment Variables" settings during deployment.
+
+### 6. Local Development & Testing
+You can test the frontend locally before deploying:
+- **Development Mode**: Run `npm run dev` to start a development server at `http://localhost:5173`.
+- **Production Preview**: Run `npm run build` then `npm run preview` to test the final optimized build at `http://localhost:4173`.
+
+#### Important for Local Authentication:
+1. **Magic Link Redirects**: In your Supabase Dashboard, go to **Auth > URL Configuration**.
+   - Set **Site URL** to `http://localhost:5173`.
+   - Add `http://localhost:5173/**` to the **Redirect URLs** list.
+2. **Environment Changes**: If you modify your `.env` file, you **must restart** the development server (`Ctrl+C` then `npm run dev`) for the changes to take effect.
+3. **Verification**: Open your browser console (F12) to see if Supabase has initialized correctly.
+
+### 7. Frontend Deployment
+- Connect your GitHub repository to a platform like Vercel or Netlify. Ensure you also add your `.env` variables to the platform's "Environment Variables" settings during deployment.
 
 ## Tech Stack
 - **Frontend**: React, TypeScript, Vite, CSS Modules.

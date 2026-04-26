@@ -1,148 +1,222 @@
+:root {
+  --primary: #646cff;
+  --primary-hover: #535bf2;
+  --bg: #ffffff;
+  --text: #213547;
+  --border: #e2e8f0;
+  --card-bg: #ffffff;
+  --muted: #64748b;
+  --danger: #ef4444;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f172a;
+    --text: #f8fafc;
+    --border: #1e293b;
+    --card-bg: #1e293b;
+    --muted: #94a3b8;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+}
+
 .container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 2rem;
+  min-height: 85vh;
 }
 
 header {
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+h1 {
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+/* Landing Page */
+.landing {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.hero {
+  max-width: 600px;
+}
+
+.hero h2 {
+  font-size: 2.75rem;
+  line-height: 1.1;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: var(--muted);
   margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #eee;
+  line-height: 1.4;
 }
 
 .user-info {
   display: flex;
   align-items: center;
+  gap: 1.25rem;
+}
+
+.user-info span {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Dashboard Layout */
+.dashboard {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+/* Alert List Styles */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
   gap: 1rem;
 }
 
-.main-content {
-  display: flex;
-  gap: 3rem;
-  width: 100%;
-  align-items: flex-start;
+.section-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-.sidebar {
-  flex: 0 0 500px;
-}
-
-.content {
-  flex: 1;
-  text-align: left;
+.count-badge {
+  background: var(--primary);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
 .alert-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1rem;
 }
 
 .alert-card {
-  padding: 1.5rem;
-  background: white;
-  border: 1px solid #eee;
-  border-radius: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
-  transition: opacity 0.2s;
-}
-
-.alert-card.inactive {
-  opacity: 0.5;
+  gap: 1.25rem;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
 }
 
 .alert-info {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 
 .alert-info strong {
   font-size: 1.1rem;
+  display: block;
+  line-height: 1.2;
 }
 
-.alert-info small {
-  color: #666;
+.price-tag {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1rem;
 }
 
-.alert-actions {
+.meta {
   display: flex;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
-.delete-btn {
-  background-color: #ff4d4d;
-}
-.delete-btn:hover {
-  background-color: #ff3333;
-}
-
-@media (max-width: 1000px) {
-  .main-content {
-    flex-direction: column;
-  }
-  .sidebar {
-    width: 100%;
-    flex: none;
-  }
+.channel-tag {
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  font-size: 0.7rem;
+  background: var(--border);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
 }
 
-@media (prefers-color-scheme: dark) {
-  header {
-    border-color: #333;
-  }
-  .alert-card {
-    background: #1a1a1a;
-    border-color: #333;
-  }
-  .alert-info small {
-    color: #999;
-  }
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #646cff;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
+/* Form Styles */
 .alert-form {
-  background: #fdfdfd;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  width: 100%;
-  max-width: 500px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 1.75rem;
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  text-align: left;
-  border: 1px solid #eee;
+  gap: 1.25rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
 .alert-form h3 {
-  margin: 0;
-  color: #111;
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
 }
 
 .form-section {
@@ -151,10 +225,18 @@ button:focus-visible {
   gap: 0.75rem;
 }
 
-.form-section label, .form-group label {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #444;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0; /* Prevents flex children from overflowing */
+}
+
+.form-row {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
 }
 
 .checkbox-group {
@@ -163,68 +245,76 @@ button:focus-visible {
   gap: 0.5rem;
 }
 
-.checkbox-group button {
-  background: #fff;
-  color: #444;
-  border: 1px solid #ddd;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.85rem;
-}
-
-.checkbox-group button.active {
-  background: #646cff;
-  color: white;
-  border-color: #646cff;
-}
-
-.form-row {
-  display: flex;
-  gap: 1rem;
-}
-
-.form-group {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 input, select {
-  padding: 0.6rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  background: transparent;
+  color: inherit;
   width: 100%;
+  max-width: 100%;
 }
 
-.submit-btn {
-  margin-top: 1rem;
-  width: 100%;
-  background-color: #646cff;
+/* Buttons */
+button {
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.6rem 1.25rem;
+  font-weight: 700;
+  transition: all 0.2s;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.primary-btn {
+  background: var(--primary);
   color: white;
-  font-weight: 600;
-  padding: 0.8rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .alert-form {
-    background: #1a1a1a;
-    border-color: #333;
-  }
-  .alert-form h3 {
-    color: #eee;
-  }
-  .form-section label, .form-group label {
-    color: #bbb;
-  }
-  .checkbox-group button {
-    background: #2a2a2a;
-    color: #ccc;
-    border-color: #444;
-  }
-  input, select {
-    background: #2a2a2a;
-    color: white;
-    border-color: #444;
-  }
+.primary-btn:hover {
+  background: var(--primary-hover);
+}
+
+.primary-btn.lg {
+  padding: 0.85rem 1.75rem;
+  font-size: 1.1rem;
+}
+
+.secondary-btn {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text);
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.action-btn {
+  background: var(--border);
+  color: var(--text);
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+}
+
+.delete-btn.icon {
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.25rem;
+  padding: 0.4rem;
+}
+
+.alert-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.checkbox-group button {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
 }

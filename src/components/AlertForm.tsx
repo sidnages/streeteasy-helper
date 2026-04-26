@@ -138,7 +138,7 @@ export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading }) => 
         </div>
       )}
 
-      <button type="submit" disabled={isLoading} className="submit-btn">
+      <button type="submit" disabled={isLoading} className="primary-btn lg">
         {isLoading ? 'Creating...' : 'Create Alert'}
       </button>
     </form>
