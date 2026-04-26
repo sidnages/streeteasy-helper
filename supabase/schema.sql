@@ -9,6 +9,7 @@ create table profiles (
 create table alerts (
   id uuid default gen_random_uuid() primary key,
   user_id uuid references auth.users not null,
+  email text,
   filters jsonb not null default '{}'::jsonb,
   delivery_method text check (delivery_method in ('email', 'discord')),
   discord_webhook_url text,

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { AlertForm } from './components/AlertForm'
-import { Alert, SearchFilters, DeliveryMethod } from './types'
+import { Alert, SearchFilters, DeliveryMethod, AREA_OPTIONS } from './types'
 import { supabase } from './lib/supabase'
 import './App.css'
 
@@ -39,11 +39,15 @@ function App() {
     if (error) {
       console.error('Error fetching alerts:', error)
     } else {
-      setAlerts(data || [])
+      const parsedAlerts = (data || []).map(alert => ({
+        ...alert,
+        filters: typeof alert.filters === 'string' ? JSON.parse(alert.filters) : alert.filters
+      }))
+      setAlerts(parsedAlerts)
     }
   }
 
-  const handleCreateAlert = async (data: { filters: SearchFilters; deliveryMethod: DeliveryMethod; discordWebhookUrl?: string }) => {
+  const handleCreateAlert = async (data: { filters: SearchFilters; deliveryMethod: DeliveryMethod; email?: string; discordWebhookUrl?: string }) => {
     if (!user) {
       alert('Please sign in to create alerts.')
       return
@@ -53,6 +57,7 @@ function App() {
     const { error } = await supabase.from('alerts').insert([
       {
         user_id: user.id,
+        email: data.email,
         filters: data.filters,
         delivery_method: data.deliveryMethod,
         discord_webhook_url: data.discordWebhookUrl,
@@ -151,17 +156,18 @@ function App() {
                   <div key={alert.id} className={`alert-card ${!alert.is_active ? 'inactive' : ''}`}>
                     <div className="alert-info">
                       <strong>
-                        {alert.filters.areas.length > 0 
-                          ? alert.filters.areas.map(id => AREA_OPTIONS.find(a => a.value === id)?.label).join(', ')
+                        {alert.filters?.areas && Array.isArray(alert.filters.areas)
+                          ? alert.filters.areas.map((id: number) => AREA_OPTIONS.find(a => a.value === id)?.label || `Area ${id}`).join(', ')
                           : 'All Areas'}
                       </strong>
                       <span className="price-tag">
-                        {alert.filters.price.lowerBound ? `$${alert.filters.price.lowerBound.toLocaleString()}+` : 'Any price'} 
-                        {alert.filters.price.upperBound ? ` up to $${alert.filters.price.upperBound.toLocaleString()}` : ''}
+                        {alert.filters?.price?.lowerBound ? `$${alert.filters.price.lowerBound.toLocaleString()}+` : 'Any price'} 
+                        {alert.filters?.price?.upperBound ? ` up to $${alert.filters.price.upperBound.toLocaleString()}` : ''}
                       </span>
                       <div className="meta">
                         <span className="channel-tag">{alert.delivery_method}</span>
-                        {alert.filters.bedrooms.lowerBound !== null && (
+                        {alert.email && <span className="email-tag">{alert.email}</span>}
+                        {alert.filters?.bedrooms?.lowerBound != null && (
                           <span>{alert.filters.bedrooms.lowerBound}+ Beds</span>
                         )}
                       </div>

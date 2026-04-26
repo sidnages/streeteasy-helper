@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SearchFilters, DeliveryMethod, AMENITIES_OPTIONS, AREA_OPTIONS } from '../types';
 
 interface AlertFormProps {
-  onSubmit: (data: { filters: SearchFilters; deliveryMethod: DeliveryMethod; discordWebhookUrl?: string }) => void;
+  onSubmit: (data: { filters: SearchFilters; deliveryMethod: DeliveryMethod; email?: string; discordWebhookUrl?: string }) => void;
   isLoading?: boolean;
 }
 
@@ -17,11 +17,12 @@ export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading }) => 
   });
 
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('email');
+  const [email, setEmail] = useState('');
   const [discordWebhookUrl, setDiscordWebhookUrl] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ filters, deliveryMethod, discordWebhookUrl });
+    onSubmit({ filters, deliveryMethod, email, discordWebhookUrl });
   };
 
   const toggleArea = (areaId: number) => {
@@ -124,6 +125,19 @@ export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading }) => 
           <option value="discord">Discord Webhook</option>
         </select>
       </div>
+
+      {deliveryMethod === 'email' && (
+        <div className="form-group">
+          <label>Alert Email Address</label>
+          <input
+            type="email"
+            required
+            placeholder="your@email.com"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+          />
+        </div>
+      )}
 
       {deliveryMethod === 'discord' && (
         <div className="form-group">

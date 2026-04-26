@@ -67,12 +67,8 @@ serve(async (req) => {
           await notifyDiscord(alert.discord_webhook_url, newListings)
         }
         
-        if (alert.delivery_method === 'email') {
-          // Fetch user email
-          const { data: profile } = await supabase.from('profiles').select('email').eq('id', alert.user_id).single()
-          if (profile?.email) {
-            await notifyEmail(profile.email, newListings)
-          }
+        if (alert.delivery_method === 'email' && alert.email) {
+          await notifyEmail(alert.email, newListings)
         }
       }
 

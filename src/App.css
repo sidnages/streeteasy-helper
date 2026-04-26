@@ -317,4 +317,24 @@ button {
   padding: 0.4rem 0.75rem;
   font-size: 0.85rem;
   font-weight: 600;
+  background: #f1f5f9;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .checkbox-group button {
+    background: #1e293b;
+  }
+}
+
+.checkbox-group button:hover {
+  border-color: var(--primary);
+}
+
+.checkbox-group button.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
 }

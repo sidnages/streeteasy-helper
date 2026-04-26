@@ -21,6 +21,7 @@ export type DeliveryMethod = 'email' | 'discord';
 export interface Alert {
   id: string;
   user_id: string;
+  email?: string;
   filters: SearchFilters;
   delivery_method: DeliveryMethod;
   discord_webhook_url?: string;
