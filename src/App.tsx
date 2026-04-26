@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { AlertForm } from './components/AlertForm'
-import { Alert, SearchFilters, DeliveryMethod, AREA_OPTIONS } from './types'
+import { Alert, SearchFilters, DeliveryMethod, AREA_OPTIONS, AMENITIES_OPTIONS } from './types'
 import { supabase } from './lib/supabase'
 import './App.css'
 
@@ -169,6 +169,15 @@ function App() {
                         {alert.email && <span className="email-tag">{alert.email}</span>}
                         {alert.filters?.bedrooms?.lowerBound != null && (
                           <span>{alert.filters.bedrooms.lowerBound}+ Beds</span>
+                        )}
+                        {alert.filters?.amenities && alert.filters.amenities.length > 0 && (
+                          <div className="amenities-list">
+                            {alert.filters.amenities.map((val: string) => (
+                              <span key={val} className="amenity-tag">
+                                {AMENITIES_OPTIONS.find(o => o.value === val)?.label || val}
+                              </span>
+                            ))}
+                          </div>
                         )}
                       </div>
                     </div>
