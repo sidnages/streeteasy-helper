@@ -29,21 +29,43 @@ Automated rental alerts for StreetEasy listings, sent directly to your Discord o
 - Click **Create API Key**, give it a name (e.g., "StreetEasy Helper"), and copy the key immediately.
 - *Note*: By default, you can send emails to your own account email. To send to others, you would need to verify a domain, but for personal alerts, the default setup is sufficient.
 
-### 3. Edge Function Deployment
+### 3. ScraperAPI Setup
+- Create an account at [scraperapi.com](https://www.scraperapi.com/).
+- From your dashboard, copy your **API Key**.
+- ScraperAPI is used to handle StreetEasy's anti-bot protections, ensuring the Edge Function can reliably fetch new listings.
+
+### 4. Edge Function Deployment
 - Login and link your project: `npx supabase login` and `npx supabase link --project-ref your-project-ref`.
 - Deploy the function: `npx supabase functions deploy check-alerts`.
 - Set secrets for the function:
   ```bash
   npx supabase secrets set RESEND_API_KEY=your_resend_key
   npx supabase secrets set SERVICE_ROLE_KEY=your_service_role_key
+  npx supabase secrets set SCRAPER_API_KEY=your_scraperapi_key
   ```
 - **RESEND_API_KEY**: The key you just generated in Resend.
 - **SERVICE_ROLE_KEY**: Found in your Supabase Dashboard under **Project Settings > API**. 
-  - *Note*: Use the `service_role` key (secret), NOT the `anon` key, as the function needs full database access to bypass Row Level Security and check/update listings for all users.np
+  - *Note*: Use the `service_role` key (secret), NOT the `anon` key, as the function needs full database access to bypass Row Level Security and check/update listings for all users.
+- **SCRAPER_API_KEY**: The API key from your ScraperAPI dashboard.
 
-### 4. Schedule the Checker
-In the Supabase Dashboard, go to **Database > Cron** (if enabled) or use an external trigger to call your function endpoint every 30 minutes:
-`POST https://your-project.supabase.co/functions/v1/check-alerts` (use service role key for auth).
+### 5. Schedule the Checker
+To automate the checking process, you must schedule the Edge Function using the Supabase Cron integration:
+
+1. In the Supabase Dashboard, select **Database > Integrations > Cron**.
+2. Click **Create job**.
+3. Configure the job with the following:
+   - **Name**: `check-alerts-cron`
+   - **Schedule**: `*/30 * * * *` (runs every 30 minutes)
+   - **HTTP Method**: `POST`
+   - **URL**: `https://your-project.supabase.co/functions/v1/check-alerts`
+   - **Body**: `{"action": "cron"}`
+   - **Headers**: 
+     - Click **Add Header** to add the following:
+       - `Authorization`: `Bearer {YOUR_SERVICE_ROLE_KEY}`
+       - `apikey`: `{YOUR_SERVICE_ROLE_KEY}`
+       - `Content-Type`: `application/json`
+
+*Note: Replace `your-project.supabase.co` with your actual project URL and `YOUR_SERVICE_ROLE_KEY` with the `service_role` key from your **Project Settings > API**.*
 
 ### 6. Building The Project
 - **Create a `.env` file**: 
@@ -55,7 +77,7 @@ In the Supabase Dashboard, go to **Database > Cron** (if enabled) or use an exte
   6. **Save these in a local `.env` file** in the root directory of this project (see `.env.example` for format).
 - **Install and Build**: Run `npm install` followed by `npm run build`.
 
-### 6. Local Development & Testing
+### 7. Local Development & Testing
 You can test the frontend locally before deploying:
 - **Development Mode**: Run `npm run dev` to start a development server at `http://localhost:5173`.
 - **Production Preview**: Run `npm run build` then `npm run preview` to test the final optimized build at `http://localhost:4173`.
