@@ -425,3 +425,127 @@ button {
   color: white;
   border-color: var(--primary);
 }
+
+/* Borough and Neighborhood Styles */
+.borough-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.borough-item {
+  position: relative;
+  flex: 0 1 auto;
+}
+
+.borough-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+  .borough-toggle {
+    background: #1e293b;
+  }
+}
+
+.borough-toggle:hover {
+  background: var(--border);
+}
+
+.borough-toggle.has-selection {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.borough-count {
+  background: var(--primary);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0 0.4rem;
+  border-radius: 99px;
+  line-height: 1.4;
+}
+
+.chevron {
+  font-size: 0.7rem;
+  opacity: 0.5;
+  transition: transform 0.2s;
+}
+
+.chevron.up {
+  transform: rotate(180deg);
+}
+
+.neighborhood-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(160px, 1fr));
+  gap: 0.4rem;
+  padding: 0.75rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  max-height: 300px;
+  overflow-y: auto;
+  width: max-content;
+  max-width: 360px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .neighborhood-dropdown {
+    background: #1e293b;
+  }
+}
+
+.neighborhood-btn {
+  justify-content: flex-start;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: transparent;
+  border: 1px solid transparent;
+  text-align: left;
+  border-radius: 4px;
+}
+
+.neighborhood-btn:hover {
+  background: var(--border);
+}
+
+.neighborhood-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.dropdown-divider {
+  grid-column: 1 / -1;
+  height: 1px;
+  background: var(--border);
+  margin: 0.25rem 0;
+}
+
+.select-all-btn, .reset-btn {
+  font-weight: 700 !important;
+}
+
+.reset-btn:hover {
+  background: var(--danger) !important;
+  color: white !important;
+  border-color: var(--danger) !important;
+}

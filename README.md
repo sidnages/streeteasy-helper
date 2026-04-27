@@ -12,7 +12,7 @@ Automated rental alerts for StreetEasy listings, sent directly to your Discord o
 ## How it Works
 1. **Alert Creation**: Users define search criteria (neighborhood, price, beds, etc.) in the React frontend.
 2. **Secure Storage**: Alerts are stored in a Supabase PostgreSQL database. Row Level Security (RLS) ensures users only see their own alerts.
-3. **Automated Scanning**: A Supabase Edge Function runs on a schedule. It iterates through active alerts and queries the StreetEasy API for matches.
+3. **Automated Scanning**: A Supabase Edge Function runs on a schedule. It iterates through active alerts and queries the StreetEasy API via **ScraperAPI** to reliably fetch listing data while bypassing anti-bot protections.
 4. **Intelligent Deduplication**: The app tracks `seen_listings` for each alert. You are only notified about new apartments that hit the market since the last check.
 5. **Instant Delivery**: Notifications are dispatched via Discord Webhooks or Resend (Email), providing direct links to the new listings.
 
@@ -55,7 +55,8 @@ To automate the checking process, you must schedule the Edge Function using the 
 2. Click **Create job**.
 3. Configure the job with the following:
    - **Name**: `check-alerts-cron`
-   - **Schedule**: `*/30 * * * *` (runs every 30 minutes)
+   - **Schedule**: [configure this how you please - reccommended is twice a day]
+     - Note that Scraper API free-tier allows 5000 monthly credits and each alert uses 10 credits
    - **HTTP Method**: `POST`
    - **URL**: `https://your-project.supabase.co/functions/v1/check-alerts`
    - **Body**: `{"action": "cron"}`
@@ -95,5 +96,5 @@ You can test the frontend locally before deploying:
 ## Tech Stack
 - **Frontend**: React, TypeScript, Vite, CSS Modules.
 - **Database**: Supabase (PostgreSQL).
-- **Backend**: Supabase Edge Functions (Deno).
+- **Backend**: Supabase Edge Functions (Deno), ScraperAPI.
 - **Notifications**: Resend (Email), Discord Webhooks.
