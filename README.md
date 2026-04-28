@@ -95,6 +95,14 @@ You can test the frontend locally before deploying:
 ### 7. Frontend Deployment
 - Connect your GitHub repository to a platform like Vercel or Netlify. Ensure you also add your `.env` variables to the platform's "Environment Variables" settings during deployment.
 
+#### Important for Remote Authentication:
+Important: For this to work in production, you must also update your Supabase settings:
+  1. Go to your Supabase Dashboard.
+  2. Navigate to Authentication > URL Configuration.
+  3. Add your production URL (e.g., https://your-app.vercel.app/**) to the Redirect URLs list. 
+      * Using the /** wildcard ensures that any sub-page on your site is allowed as a redirect target.
+  4. Ensure your Site URL is also set correctly (this is the default fallback).
+
 ## Tech Stack
 - **Frontend**: React, TypeScript, Vite, CSS Modules.
 - **Database**: Supabase (PostgreSQL).
