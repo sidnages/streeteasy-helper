@@ -1,42 +1,50 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-const getSupabaseConfig = () => {
-  const rawUrl = import.meta.env.VITE_SUPABASE_URL
-  const rawKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+export const getSavedConfig = () => {
+  const savedUrl = localStorage.getItem('STREETEASY_SUPABASE_URL')
+  const savedKey = localStorage.getItem('STREETEASY_SUPABASE_KEY')
+  
+  const rawUrl = savedUrl || import.meta.env.VITE_SUPABASE_URL || ''
+  const key = savedKey || import.meta.env.VITE_SUPABASE_ANON_KEY || ''
 
-  if (!rawUrl || !rawKey || rawUrl.includes('your_supabase_url')) {
-    return { url: '', key: '', isValid: false }
-  }
-
+  // Sanitization: Remove trailing slashes and common path mistakes
+  let url = rawUrl.trim().replace(/\/$/, '')
   try {
-    // Ensure we only use the protocol and host (e.g., https://xyz.supabase.co)
-    const urlObj = new URL(rawUrl)
-    return { 
-      url: `${urlObj.protocol}//${urlObj.host}`, 
-      key: rawKey, 
-      isValid: true 
+    if (url) {
+      const u = new URL(url)
+      url = `${u.protocol}//${u.host}`
     }
   } catch (e) {
-    // Fallback if URL constructor fails
-    return { 
-      url: rawUrl.replace(/\/$/, ''), 
-      key: rawKey, 
-      isValid: true 
-    }
+    // If URL parsing fails, stick with the trimmed version
+  }
+
+  return {
+    url,
+    key: key.trim(),
+    isValid: !!url && !!key && !url.includes('your_supabase_url')
   }
 }
 
-const { url, key, isValid } = getSupabaseConfig()
+let config = getSavedConfig()
 
-if (!isValid) {
-  console.error('❌ Supabase configuration is missing or invalid. Check your .env file.')
-} else {
-  console.log(`✅ Supabase initialized for: ${url.substring(0, 15)}...`)
-}
-
-export const SUPABASE_CONFIG = { url, key }
-
-export const supabase = createClient(
-  url || 'https://placeholder.supabase.co', 
-  key || 'placeholder'
+export let supabase: SupabaseClient = createClient(
+  config.url || 'https://placeholder.supabase.co',
+  config.key || 'placeholder'
 )
+
+export const updateSupabaseConfig = (url: string, key: string) => {
+  // Sanitize before saving
+  let sanitizedUrl = url.trim().replace(/\/$/, '')
+  try {
+    if (sanitizedUrl) {
+      const u = new URL(sanitizedUrl)
+      sanitizedUrl = `${u.protocol}//${u.host}`
+    }
+  } catch (e) {}
+
+  localStorage.setItem('STREETEASY_SUPABASE_URL', sanitizedUrl)
+  localStorage.setItem('STREETEASY_SUPABASE_KEY', key.trim())
+  
+  supabase = createClient(sanitizedUrl, key.trim())
+  return supabase
+}

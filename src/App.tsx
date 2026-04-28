@@ -1,32 +1,40 @@
 import { useState, useEffect } from 'react'
 import { AlertForm } from './components/AlertForm'
 import { Alert, SearchFilters, DeliveryMethod, AREA_OPTIONS, AMENITIES_OPTIONS } from './types'
-import { supabase, SUPABASE_CONFIG } from './lib/supabase'
+import { supabase, updateSupabaseConfig, getSavedConfig } from './lib/supabase'
 import './App.css'
 
 function App() {
   const [alerts, setAlerts] = useState<Alert[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [user, setUser] = useState<any>(null)
+  
+  // Dynamic config state
+  const savedConfig = getSavedConfig()
+  const [sbUrl, setSbUrl] = useState(savedConfig.url)
+  const [sbKey, setSbKey] = useState(savedConfig.key)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      if (session?.user) {
-        fetchAlerts(session.user.id)
-      }
-    })
+    // Only try to get session if we have a valid config
+    if (savedConfig.isValid) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setUser(session?.user ?? null)
+        if (session?.user) {
+          fetchAlerts(session.user.id)
+        }
+      })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      if (session?.user) {
-        fetchAlerts(session.user.id)
-      } else {
-        setAlerts([])
-      }
-    })
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null)
+        if (session?.user) {
+          fetchAlerts(session.user.id)
+        } else {
+          setAlerts([])
+        }
+      })
 
-    return () => subscription.unsubscribe()
+      return () => subscription.unsubscribe()
+    }
   }, [])
 
   const fetchAlerts = async (userId: string) => {
@@ -99,16 +107,28 @@ function App() {
   }
 
   const handleSignIn = async () => {
+    if (!sbUrl || !sbKey) {
+      alert('Please provide your Supabase URL and Anon Key first.')
+      return
+    }
+
     const email = prompt('Enter your email address to receive a secure login link (no password required):')
     if (email) {
-      const { error } = await supabase.auth.signInWithOtp({ 
-        email,
-        options: {
-          emailRedirectTo: window.location.href,
-        }
-      })
-      if (error) alert(error.message)
-      else alert('Check your email for the secure login link!')
+      try {
+        // Update client with latest inputs before signing in
+        updateSupabaseConfig(sbUrl, sbKey)
+        
+        const { error } = await supabase.auth.signInWithOtp({ 
+          email,
+          options: {
+            emailRedirectTo: window.location.href,
+          }
+        })
+        if (error) alert(error.message)
+        else alert('Check your email for the secure login link!')
+      } catch (e: any) {
+        alert('Configuration error: ' + e.message)
+      }
     }
   }
 
@@ -120,12 +140,13 @@ function App() {
         return;
       }
 
-      const response = await fetch(`${SUPABASE_CONFIG.url}/functions/v1/check-alerts`, {
+      const config = getSavedConfig();
+      const response = await fetch(`${config.url}/functions/v1/check-alerts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.access_token}`,
-          'apikey': SUPABASE_CONFIG.key
+          'apikey': config.key
         },
         body: JSON.stringify({ action: 'test', alertId }),
       });
@@ -174,7 +195,33 @@ function App() {
           <div className="hero">
             <h2>Never miss a rental listing again.</h2>
             <p>Set custom filters and get instant Discord or Email alerts as soon as a match hits StreetEasy.</p>
-            <button onClick={handleSignIn} className="primary-btn lg">Sign In via Magic Link</button>
+            
+            <div className="config-form">
+              <div className="form-group">
+                <label>Supabase Project URL</label>
+                <input 
+                  type="text" 
+                  placeholder="https://xyz.supabase.co" 
+                  value={sbUrl}
+                  onChange={(e) => setSbUrl(e.target.value)}
+                />
+              </div>
+              <div className="form-group">
+                <label>Anon Public Key</label>
+                <input 
+                  type="password" 
+                  placeholder="your-anon-key" 
+                  value={sbKey}
+                  onChange={(e) => setSbKey(e.target.value)}
+                />
+              </div>
+              <button onClick={handleSignIn} className="primary-btn lg">Sign In via Magic Link</button>
+            </div>
+            
+            <p className="helper-text">
+              Don't have these? You'll need to set up a Supabase project first. 
+              <a href="https://supabase.com" target="_blank" rel="noreferrer"> Learn more</a>
+            </p>
           </div>
         </main>
       ) : (

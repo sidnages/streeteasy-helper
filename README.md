@@ -71,14 +71,7 @@ To automate the checking process, you must schedule the Edge Function using the 
 *Note: Replace `your-project.supabase.co` with your actual project URL and `YOUR_SERVICE_ROLE_KEY` with the `service_role` key from your **Project Settings > API**.*
 
 ### 6. Building The Project
-- **Create a `.env` file**: 
- 1. Go to your [Supabase Dashboard](https://supabase.com/dashboard).
-  2. Select your project.
-  3. Click on the **Settings** (gear icon) at the bottom of the left sidebar.
-  4. Click on **API Keys** in the sidebar. Find the `anon` `public` key for `VITE_SUPABASE_ANON_KEY`.
-  5. Click on **Data API** in the sidebar. Under **API URL**, find the `URL` for `VITE_SUPABASE_URL`.
-  6. **Save these in a local `.env` file** in the root directory of this project (see `.env.example` for format).
-- **Install and Build**: Run `npm install` followed by `npm run build`.
+Run `npm install` followed by `npm run bui
 
 ### 7. Local Development & Testing
 You can test the frontend locally before deploying:
@@ -91,6 +84,13 @@ You can test the frontend locally before deploying:
    - Add `http://localhost:5173/**` to the **Redirect URLs** list.
 2. **Environment Changes**: If you modify your `.env` file, you **must restart** the development server (`Ctrl+C` then `npm run dev`) for the changes to take effect.
 3. **Verification**: Open your browser console (F12) to see if Supabase has initialized correctly.
+
+#### How to Log In:
+The app will prompt you for your "Supabase Project URL" and an "Anon Public Key". These can both be found in your [Supabase Dashboard](https://supabase.com/dashboard).
+- Select your project.
+- Click on the **Settings** (gear icon) at the bottom of the left sidebar.
+- Click on **API Keys** in the sidebar. Find the `anon` `public` key.
+- Click on **Data API** in the sidebar. Under **API URL**, find the `URL`.
 
 ### 7. Frontend Deployment
 - Connect your GitHub repository to a platform like Vercel or Netlify. Ensure you also add your `.env` variables to the platform's "Environment Variables" settings during deployment.
