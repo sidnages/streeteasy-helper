@@ -1,5 +1,7 @@
 # StreetEasy Alert Helper
 
+This is a personal utility built for the sake of making a fun project and for individual use. It is not intended for commercial use or high-volume traffic. Use at your own risk, and please don't spam Streeteasy with traffic.
+
 Automated rental alerts for StreetEasy listings, sent directly to your Discord or Email.
 
 ## Features
