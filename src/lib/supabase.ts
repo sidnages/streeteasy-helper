@@ -1,27 +1,23 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
 export const getSavedConfig = () => {
-  const savedUrl = localStorage.getItem('STREETEASY_SUPABASE_URL')
-  const savedKey = localStorage.getItem('STREETEASY_SUPABASE_KEY')
+  // Only use localStorage, ignore environment variables for the UI fields
+  const savedUrl = localStorage.getItem('STREETEASY_SUPABASE_URL') || ''
+  const savedKey = localStorage.getItem('STREETEASY_SUPABASE_KEY') || ''
   
-  const rawUrl = savedUrl || import.meta.env.VITE_SUPABASE_URL || ''
-  const key = savedKey || import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-
   // Sanitization: Remove trailing slashes and common path mistakes
-  let url = rawUrl.trim().replace(/\/$/, '')
+  let url = savedUrl.trim().replace(/\/$/, '')
   try {
     if (url) {
       const u = new URL(url)
       url = `${u.protocol}//${u.host}`
     }
-  } catch (e) {
-    // If URL parsing fails, stick with the trimmed version
-  }
+  } catch (e) {}
 
   return {
     url,
-    key: key.trim(),
-    isValid: !!url && !!key && !url.includes('your_supabase_url')
+    key: savedKey.trim(),
+    isValid: !!url && !!savedKey
   }
 }
 
@@ -33,7 +29,6 @@ export let supabase: SupabaseClient = createClient(
 )
 
 export const updateSupabaseConfig = (url: string, key: string) => {
-  // Sanitize before saving
   let sanitizedUrl = url.trim().replace(/\/$/, '')
   try {
     if (sanitizedUrl) {
