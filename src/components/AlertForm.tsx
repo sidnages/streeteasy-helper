@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { SearchFilters, DeliveryMethod, AMENITIES_OPTIONS, AREA_OPTIONS } from '../types';
+import React, { useState, useEffect } from 'react';
+import { SearchFilters, DeliveryMethod, AMENITIES_OPTIONS, AREA_OPTIONS, Alert } from '../types';
 
 interface AlertFormProps {
   onSubmit: (data: { filters: SearchFilters; deliveryMethod: DeliveryMethod; email?: string; discordWebhookUrl?: string }) => void;
   isLoading?: boolean;
+  editingAlert?: Alert | null;
+  onCancel?: () => void;
 }
 
-export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading }) => {
+export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading, editingAlert, onCancel }) => {
   const [filters, setFilters] = useState<SearchFilters>({
     areas: [],
     price: { lowerBound: null, upperBound: null },
@@ -20,6 +22,28 @@ export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading }) => 
   const [email, setEmail] = useState('');
   const [discordWebhookUrl, setDiscordWebhookUrl] = useState('');
   const [openBorough, setOpenBorough] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (editingAlert) {
+      setFilters(editingAlert.filters);
+      setDeliveryMethod(editingAlert.delivery_method);
+      setEmail(editingAlert.email || '');
+      setDiscordWebhookUrl(editingAlert.discord_webhook_url || '');
+    } else {
+      // Reset form when not editing
+      setFilters({
+        areas: [],
+        price: { lowerBound: null, upperBound: null },
+        bedrooms: { lowerBound: null, upperBound: null },
+        bathrooms: { lowerBound: null, upperBound: null },
+        amenities: [],
+        petsAllowed: null,
+      });
+      setDeliveryMethod('email');
+      setEmail('');
+      setDiscordWebhookUrl('');
+    }
+  }, [editingAlert]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,7 +103,10 @@ export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading }) => 
 
   return (
     <form onSubmit={handleSubmit} className="alert-form">
-      <h3>Create New Alert</h3>
+      <h3>{editingAlert ? 'Editing Existing Alert' : 'Create New Alert'}</h3>
+      {editingAlert && (
+        <p className="editing-id">ID: {editingAlert.id}</p>
+      )}
       
       <div className="form-section">
         <label>Areas</label>
@@ -143,6 +170,7 @@ export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading }) => 
           <input
             type="number"
             placeholder="Min"
+            value={filters.price.lowerBound || ''}
             onChange={e => setFilters({ ...filters, price: { ...filters.price, lowerBound: Number(e.target.value) || null } })}
           />
         </div>
@@ -151,6 +179,7 @@ export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading }) => 
           <input
             type="number"
             placeholder="Max"
+            value={filters.price.upperBound || ''}
             onChange={e => setFilters({ ...filters, price: { ...filters.price, upperBound: Number(e.target.value) || null } })}
           />
         </div>
@@ -162,6 +191,7 @@ export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading }) => 
           <input
             type="number"
             placeholder="Min Beds"
+            value={filters.bedrooms.lowerBound || ''}
             onChange={e => setFilters({ ...filters, bedrooms: { ...filters.bedrooms, lowerBound: Number(e.target.value) || null } })}
           />
         </div>
@@ -171,6 +201,7 @@ export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading }) => 
             type="number"
             step="0.5"
             placeholder="Min Baths"
+            value={filters.bathrooms.lowerBound || ''}
             onChange={e => setFilters({ ...filters, bathrooms: { ...filters.bathrooms, lowerBound: Number(e.target.value) || null } })}
           />
         </div>
@@ -226,9 +257,20 @@ export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading }) => 
         </div>
       )}
 
-      <button type="submit" disabled={isLoading} className="primary-btn lg">
-        {isLoading ? 'Creating...' : 'Create Alert'}
-      </button>
+      {editingAlert ? (
+        <div className="form-actions">
+          <button type="button" onClick={onCancel} className="secondary-btn">
+            Cancel
+          </button>
+          <button type="submit" disabled={isLoading} className="primary-btn">
+            {isLoading ? 'Saving...' : 'Save Changes'}
+          </button>
+        </div>
+      ) : (
+        <button type="submit" disabled={isLoading} className="primary-btn lg">
+          {isLoading ? 'Creating...' : 'Create Alert'}
+        </button>
+      )}
     </form>
   );
 };

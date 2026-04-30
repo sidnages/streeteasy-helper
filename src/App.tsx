@@ -9,6 +9,7 @@ function App() {
   const [alerts, setAlerts] = useState<Alert[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [user, setUser] = useState<any>(null)
+  const [editingAlert, setEditingAlert] = useState<Alert | null>(null)
   
   // Dynamic config state
   const savedConfig = getSavedConfig()
@@ -63,20 +64,40 @@ function App() {
     }
 
     setIsLoading(true)
-    const { error } = await supabase.from('alerts').insert([
-      {
-        user_id: user.id,
-        email: data.email,
-        filters: data.filters,
-        delivery_method: data.deliveryMethod,
-        discord_webhook_url: data.discordWebhookUrl,
-      },
-    ])
+    
+    if (editingAlert) {
+      const { error } = await supabase
+        .from('alerts')
+        .update({
+          email: data.email,
+          filters: data.filters,
+          delivery_method: data.deliveryMethod,
+          discord_webhook_url: data.discordWebhookUrl,
+        })
+        .eq('id', editingAlert.id)
 
-    if (error) {
-      alert('Error creating alert: ' + error.message)
+      if (error) {
+        alert('Error updating alert: ' + error.message)
+      } else {
+        fetchAlerts(user.id)
+        setEditingAlert(null)
+      }
     } else {
-      fetchAlerts(user.id)
+      const { error } = await supabase.from('alerts').insert([
+        {
+          user_id: user.id,
+          email: data.email,
+          filters: data.filters,
+          delivery_method: data.deliveryMethod,
+          discord_webhook_url: data.discordWebhookUrl,
+        },
+      ])
+
+      if (error) {
+        alert('Error creating alert: ' + error.message)
+      } else {
+        fetchAlerts(user.id)
+      }
     }
     setIsLoading(false)
   }
@@ -228,7 +249,12 @@ function App() {
       ) : (
         <main className="dashboard">
           <section className="form-container">
-            <AlertForm onSubmit={handleCreateAlert} isLoading={isLoading} />
+            <AlertForm 
+              onSubmit={handleCreateAlert} 
+              isLoading={isLoading} 
+              editingAlert={editingAlert}
+              onCancel={() => setEditingAlert(null)}
+            />
           </section>
 
           <section className="list-container">
@@ -282,6 +308,12 @@ function App() {
                         </button>
                       </div>
                       <div className="action-buttons-group">
+                        <button 
+                          onClick={() => editingAlert?.id === alert.id ? setEditingAlert(null) : setEditingAlert(alert)}
+                          className={`action-btn ${editingAlert?.id === alert.id ? 'active' : ''}`}
+                        >
+                          {editingAlert?.id === alert.id ? 'Cancel' : 'Edit'}
+                        </button>
                         <button 
                           onClick={() => toggleAlertStatus(alert.id, alert.is_active)}
                           className="action-btn"
