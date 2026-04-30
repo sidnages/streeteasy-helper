@@ -22,6 +22,18 @@ serve(async (req) => {
   try {
     const { action, alertId } = await req.json().catch(() => ({}));
 
+    // Cleanup: Delete seen_listings older than 90 days
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+    
+    const { error: cleanupError } = await supabase
+      .from('seen_listings')
+      .delete()
+      .lt('created_at', ninetyDaysAgo.toISOString());
+    
+    if (cleanupError) console.error('Cleanup Error:', cleanupError.message);
+    else console.log('Successfully cleaned up old seen_listings.');
+
     // Test notification
     if (action === 'test' && alertId) {
       console.log(`Test requested for alert: ${alertId}`)
