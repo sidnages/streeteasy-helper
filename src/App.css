@@ -11,16 +11,6 @@
   --radius-lg: 16px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0f172a;
-    --text: #f8fafc;
-    --border: #1e293b;
-    --card-bg: #1e293b;
-    --muted: #94a3b8;
-  }
-}
-
 * {
   box-sizing: border-box;
 }
@@ -466,12 +456,6 @@ button {
   border-radius: 8px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .checkbox-group button {
-    background: #1e293b;
-  }
-}
-
 .checkbox-group button:hover {
   border-color: var(--primary);
 }
@@ -507,12 +491,6 @@ button {
   font-weight: 600;
   color: var(--text);
   white-space: nowrap;
-}
-
-@media (prefers-color-scheme: dark) {
-  .borough-toggle {
-    background: #1e293b;
-  }
 }
 
 .borough-toggle:hover {
@@ -560,12 +538,6 @@ button {
   overflow-y: auto;
   width: max-content;
   max-width: 360px;
-}
-
-@media (prefers-color-scheme: dark) {
-  .neighborhood-dropdown {
-    background: #1e293b;
-  }
 }
 
 .neighborhood-btn {
@@ -720,4 +692,61 @@ button {
 
 .form-actions button {
   flex: 1;
+}
+
+/* Dark Mode Overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #7c3aed;
+    --primary-hover: #8b5cf6;
+    --bg: #0f172a;
+    --text: #f8fafc;
+    --border: #334155;
+    --card-bg: #1e293b;
+    --muted: #94a3b8;
+  }
+
+  input, select {
+    background: #0f172a;
+    border-color: #334155;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--primary);
+    outline: none;
+  }
+
+  .secondary-btn {
+    background: #334155;
+    border-color: #475569;
+  }
+
+  .action-btn {
+    background: #334155;
+    color: #f8fafc;
+  }
+
+  .checkbox-group button {
+    background: #1e293b;
+    border-color: #475569;
+  }
+
+  .borough-toggle {
+    background: #1e293b;
+    border-color: #475569;
+  }
+
+  .neighborhood-dropdown, .popover-content {
+    background: #1e293b;
+    border-color: #334155;
+  }
+
+  .neighborhood-btn:hover {
+    background: #334155;
+  }
+
+  .amenity-tag {
+    background: #1e293b;
+    border-color: #334155;
+  }
 }
