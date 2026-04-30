@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SearchFilters, DeliveryMethod, AMENITIES_OPTIONS, AREA_OPTIONS, Alert } from '../types';
+import { DEFAULT_SETTINGS } from '../constants';
 
 interface AlertFormProps {
   onSubmit: (data: { filters: SearchFilters; deliveryMethod: DeliveryMethod; email?: string; discordWebhookUrl?: string }) => void;
@@ -18,7 +19,7 @@ export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading, editi
     petsAllowed: null,
   });
 
-  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('email');
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>(DEFAULT_SETTINGS.DELIVERY_METHOD);
   const [email, setEmail] = useState('');
   const [discordWebhookUrl, setDiscordWebhookUrl] = useState('');
   const [openBorough, setOpenBorough] = useState<number | null>(null);
@@ -39,7 +40,7 @@ export const AlertForm: React.FC<AlertFormProps> = ({ onSubmit, isLoading, editi
         amenities: [],
         petsAllowed: null,
       });
-      setDeliveryMethod('email');
+      setDeliveryMethod(DEFAULT_SETTINGS.DELIVERY_METHOD);
       setEmail('');
       setDiscordWebhookUrl('');
     }

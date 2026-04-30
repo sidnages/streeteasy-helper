@@ -20,6 +20,11 @@ Automated rental alerts for StreetEasy listings, sent directly to your Discord o
 
 ## Setup Instructions
 
+### 0. Configuration
+- The `src/constants.ts` (UI params) and `supabase/functions/check-alerts/constants.ts` (cron function params) files allow for some configuration
+- It is not recommended to modify any of the UI parameters
+- Some of the cron function parameters (i.e. data retention period, max listings to send via Discord) could be helpful to change
+
 ### 1. Supabase Setup
 - Create a new project at [supabase.com](https://supabase.com/).
 - Go to the **SQL Editor** and run the contents of `supabase/schema.sql`.
@@ -71,19 +76,12 @@ To automate the checking process, you must schedule the Edge Function using the 
 *Note: Replace `your-project.supabase.co` with your actual project URL and `YOUR_SERVICE_ROLE_KEY` with the `service_role` key from your **Project Settings > API**.*
 
 ### 6. Building The Project
-Run `npm install` followed by `npm run bui
+Run `npm install` followed by `npm run build`
 
 ### 7. Local Development & Testing
 You can test the frontend locally before deploying:
 - **Development Mode**: Run `npm run dev` to start a development server at `http://localhost:5173`.
 - **Production Preview**: Run `npm run build` then `npm run preview` to test the final optimized build at `http://localhost:4173`.
-
-#### Important for Local Authentication:
-1. **Magic Link Redirects**: In your Supabase Dashboard, go to **Auth > URL Configuration**.
-   - Set **Site URL** to `http://localhost:5173`.
-   - Add `http://localhost:5173/**` to the **Redirect URLs** list.
-2. **Environment Changes**: If you modify your `.env` file, you **must restart** the development server (`Ctrl+C` then `npm run dev`) for the changes to take effect.
-3. **Verification**: Open your browser console (F12) to see if Supabase has initialized correctly.
 
 #### How to Log In:
 The app will prompt you for your "Supabase Project URL" and an "Anon Public Key". These can both be found in your [Supabase Dashboard](https://supabase.com/dashboard).
@@ -92,8 +90,15 @@ The app will prompt you for your "Supabase Project URL" and an "Anon Public Key"
 - Click on **API Keys** in the sidebar. Find the `anon` `public` key.
 - Click on **Data API** in the sidebar. Under **API URL**, find the `URL`.
 
+#### Important for Local Authentication:
+1. **Magic Link Redirects**: In your Supabase Dashboard, go to **Auth > URL Configuration**.
+   - Set **Site URL** to `http://localhost:5173`.
+   - Add `http://localhost:5173/**` to the **Redirect URLs** list.
+2. **Environment Changes**: If you modify your `.env` file, you **must restart** the development server (`Ctrl+C` then `npm run dev`) for the changes to take effect.
+3. **Verification**: Open your browser console (F12) to see if Supabase has initialized correctly.
+
 ### 7. Frontend Deployment
-- Connect your GitHub repository to a platform like Vercel or Netlify.
+Connect your GitHub repository to a platform like Vercel or Netlify. Login works same as local setup.
 
 #### Important for Remote Authentication:
 Important: For this to work in production, you must also update your Supabase settings:

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { AREA_OPTIONS } from '../types';
+import { UI_CONFIG } from '../constants';
 
 interface LocationPopoverProps {
   areaIds: number[];
@@ -31,9 +32,9 @@ export const LocationPopover: React.FC<LocationPopoverProps> = ({ areaIds }) => 
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
-  const isTruncated = selectedLabels.length > 5;
+  const isTruncated = selectedLabels.length > UI_CONFIG.LOCATION_TRUNCATION_LIMIT;
   const displayText = isTruncated 
-    ? `${selectedLabels.slice(0, 5).join(', ')} +${selectedLabels.length - 5} more`
+    ? `${selectedLabels.slice(0, UI_CONFIG.LOCATION_TRUNCATION_LIMIT).join(', ')} +${selectedLabels.length - UI_CONFIG.LOCATION_TRUNCATION_LIMIT} more`
     : selectedLabels.join(', ');
 
   return (

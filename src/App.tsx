@@ -3,6 +3,7 @@ import { AlertForm } from './components/AlertForm'
 import { LocationPopover } from './components/LocationPopover'
 import { Alert, SearchFilters, DeliveryMethod, AREA_OPTIONS, AMENITIES_OPTIONS } from './types'
 import { supabase, updateSupabaseConfig, getSavedConfig } from './lib/supabase'
+import { UI_CONFIG } from './constants'
 import './App.css'
 
 function App() {
@@ -298,7 +299,7 @@ function App() {
                     </div>
                     <div className="alert-actions">
                       <div className="alert-id-container">
-                        <small className="alert-id">ID: {alert.id.substring(0, 8)}...</small>
+                        <small className="alert-id">ID: {alert.id.substring(0, UI_CONFIG.ID_DISPLAY_LENGTH)}...</small>
                         <button 
                           onClick={() => copyToClipboard(alert.id)}
                           className="copy-btn"
