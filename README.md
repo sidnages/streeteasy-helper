@@ -82,6 +82,8 @@ Run `npm install` followed by `npm run build`
 You can test the frontend locally before deploying:
 - **Development Mode**: Run `npm run dev` to start a development server at `http://localhost:5173`.
 - **Production Preview**: Run `npm run build` then `npm run preview` to test the final optimized build at `http://localhost:4173`.
+- **Unit Testing (Frontend)**: Run `npm test` to execute Vitest unit tests for components and logic.
+- **Unit Testing (Edge Functions)**: Run `deno test tst/supabase/functions/check-alerts/` (requires Deno installed locally). Refer to instructions at [docs.deno.com](https://docs.deno.com/runtime/getting_started/installation/)
 
 #### How to Log In:
 The app will prompt you for your "Supabase Project URL" and an "Anon Public Key". These can both be found in your [Supabase Dashboard](https://supabase.com/dashboard).

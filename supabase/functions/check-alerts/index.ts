@@ -15,7 +15,7 @@ const SERVICE_ROLE_KEY = Deno.env.get("SERVICE_ROLE_KEY")
 
 const supabase = createClient(SUPABASE_URL!, SERVICE_ROLE_KEY!)
 
-serve(async (req) => {
+export const handler = async (req: Request) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -122,4 +122,6 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     })
   }
-})
+};
+
+serve(handler)

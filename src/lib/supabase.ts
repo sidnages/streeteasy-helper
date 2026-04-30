@@ -40,6 +40,9 @@ export const updateSupabaseConfig = (url: string, key: string) => {
   localStorage.setItem('STREETEASY_SUPABASE_URL', sanitizedUrl)
   localStorage.setItem('STREETEASY_SUPABASE_KEY', key.trim())
   
-  supabase = createClient(sanitizedUrl, key.trim())
+  // Only update client if URL is valid format
+  if (sanitizedUrl.startsWith('http')) {
+    supabase = createClient(sanitizedUrl, key.trim())
+  }
   return supabase
 }
