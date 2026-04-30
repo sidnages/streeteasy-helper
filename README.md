@@ -78,12 +78,14 @@ To automate the checking process, you must schedule the Edge Function using the 
 ### 6. Building The Project
 Run `npm install` followed by `npm run build`
 
-### 7. Local Development & Testing
-You can test the frontend locally before deploying:
-- **Development Mode**: Run `npm run dev` to start a development server at `http://localhost:5173`.
-- **Production Preview**: Run `npm run build` then `npm run preview` to test the final optimized build at `http://localhost:4173`.
+#### Testing:
 - **Unit Testing (Frontend)**: Run `npm test` to execute Vitest unit tests for components and logic.
 - **Unit Testing (Edge Functions)**: Run `deno test tst/supabase/functions/check-alerts/` (requires Deno installed locally). Refer to instructions at [docs.deno.com](https://docs.deno.com/runtime/getting_started/installation/)
+
+### 7. Running Locally
+You can run the frontend locally before deploying:
+- **Development Mode**: Run `npm run dev` to start a development server at `http://localhost:5173`.
+- **Production Preview**: Run `npm run build` then `npm run preview` to test the final optimized build at `http://localhost:4173`.
 
 #### How to Log In:
 The app will prompt you for your "Supabase Project URL" and an "Anon Public Key". These can both be found in your [Supabase Dashboard](https://supabase.com/dashboard).
@@ -99,7 +101,7 @@ The app will prompt you for your "Supabase Project URL" and an "Anon Public Key"
 2. **Environment Changes**: If you modify your `.env` file, you **must restart** the development server (`Ctrl+C` then `npm run dev`) for the changes to take effect.
 3. **Verification**: Open your browser console (F12) to see if Supabase has initialized correctly.
 
-### 7. Frontend Deployment
+### 8. Frontend Deployment
 Connect your GitHub repository to a platform like Vercel or Netlify. Login works same as local setup.
 
 #### Important for Remote Authentication:
