@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { AlertForm } from './components/AlertForm'
+import { LocationPopover } from './components/LocationPopover'
 import { Alert, SearchFilters, DeliveryMethod, AREA_OPTIONS, AMENITIES_OPTIONS } from './types'
 import { supabase, updateSupabaseConfig, getSavedConfig } from './lib/supabase'
 import './App.css'
@@ -246,22 +247,7 @@ function App() {
                   <div key={alert.id} className={`alert-card ${!alert.is_active ? 'inactive' : ''}`}>
                     <div className="alert-info">
                       <strong>
-                        {(() => {
-                          if (!alert.filters?.areas || !Array.isArray(alert.filters.areas) || alert.filters.areas.length === 0) {
-                            return 'All Areas';
-                          }
-                          
-                          const allPossibleNeighborhoods = AREA_OPTIONS.flatMap(b => b.neighborhoods || []);
-                          const selectedLabels = alert.filters.areas.map((id: number) => {
-                            const found = allPossibleNeighborhoods.find(n => n.value === id) || AREA_OPTIONS.find(b => b.value === id);
-                            return found?.label || `Area ${id}`;
-                          });
-
-                          if (selectedLabels.length <= 5) {
-                            return selectedLabels.join(', ');
-                          }
-                          return `${selectedLabels.slice(0, 5).join(', ')} +${selectedLabels.length - 5} more`;
-                        })()}
+                        <LocationPopover areaIds={alert.filters?.areas} />
                       </strong>
                       <span className="price-tag">
                         {alert.filters?.price?.lowerBound ? `$${alert.filters.price.lowerBound.toLocaleString()}+` : 'Any price'} 
